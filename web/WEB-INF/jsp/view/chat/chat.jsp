@@ -112,13 +112,8 @@
 
                 server.onmessage = function(event) {
                 	
-                	console.log(event.data);
-                	
                     if(event.data instanceof ArrayBuffer) {
-                    	console.log(event.data);
-                    	message = event.data;
-                        //var message = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
-                        console.log(message);
+                        var message = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
                         
                         //채팅화면에 입력
                         objectMessage(message);

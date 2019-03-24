@@ -98,6 +98,7 @@ public class ChatEndpoint implements HttpSessionListener {
             chatSession.log(message);
             chatSession.getCustomer().getBasicRemote().sendObject(message);
 
+            System.out.println("111111");
         } catch(IOException | EncodeException e) {
             this.onError(session, e);
         }

@@ -1,7 +1,9 @@
 package com.wrox.chat;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
@@ -41,7 +43,10 @@ public class ChatMessageCodec implements Encoder.BinaryStream<ChatMessage>, Deco
     public ChatMessage decode(InputStream inputStream) throws DecodeException, IOException {
         try {
         	System.out.println("decode");
-            return ChatMessageCodec.MAPPER.readValue(inputStream, ChatMessage.class);
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "euc-kr"));
+
+        	ChatMessage charMessage = ChatMessageCodec.MAPPER.readValue(reader, ChatMessage.class);
+            return charMessage;
         } catch(JsonParseException | JsonMappingException e) {
             throw new DecodeException((ByteBuffer)null, e.getMessage(), e);
         }
