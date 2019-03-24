@@ -49,8 +49,6 @@
                 var username       = '${sessionScope.username}';	//사용자명
                 var otherJoined    = false;
                 
-                console.log(window);
-                
                 if(!("WebSocket" in window)) {
                     modalErrorBody.text('사용중인 브라우저는 채팅서비스가 지원되지 않습니다.');
                     modalError.modal('show');
@@ -61,16 +59,16 @@
                     chatLog.append($('<div>').addClass('informational').text(moment().format('h:mm:ss a') + ': ' + m));
                 };
                 
-                infoMessage('Connecting to the chat server...');
+                infoMessage('채팅서버 접속중입니다...');
 
                 var objectMessage = function(message) {
                     var log = $('<div>');
                     var date = message.timestamp == null ? '' : moment.unix(message.timestamp).format('h:mm:ss a');
                     
                     if(message.user != null) {
-                        var c = message.user == username ? '나' : '상대';
+                        var c = message.user == username ? 'user-me' : 'user-you';
                         
-                        log.append($('<span>').addClass(c).text(date+' '+message.user+':\xA0')).append($('<span>').text(message.content));
+                        log.append($('<span>').addClass(c).text(date+' '+message.user+'\xA0:\xA0')).append($('<span>').text(message.content));
                         
                     } else {
                         log.addClass(message.type == 'ERROR' ? 'error' : 'informational').text(date + ' ' + message.content);
@@ -83,6 +81,7 @@
                 try {
                     server = new WebSocket('ws://' + window.location.host + '<c:url value="/chat/${chatSessionId}" />');
                     server.binaryType = 'arraybuffer';
+                    //server.binaryType = 'blob';
                     
                 } catch(error) {
                     modalErrorBody.text(error);
@@ -91,14 +90,15 @@
                 }
 
                 server.onopen = function(event) {
-                    infoMessage('Connected to the chat server.');
+                    infoMessage('채팅서버 연결되었습니다.');
                 };
 
                 server.onclose = function(event) {
-                    if(server != null) infoMessage('Disconnected from the chat server.');
+                    if(server != null) infoMessage('연결이 종료되었습니다.');
                     
                     server = null;
                     
+                    //정상종료가 아닌경우
                     if( !event.wasClean || event.code != 1000 ) {
                         modalErrorBody.text('Code ' + event.code + ': ' + event.reason);
                         modalError.modal('show');
@@ -111,11 +111,16 @@
                 };
 
                 server.onmessage = function(event) {
-                	console.log(event);
+                	
                 	console.log(event.data);
+                	
                     if(event.data instanceof ArrayBuffer) {
-                        var message = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
+                    	console.log(event.data);
+                    	message = event.data;
+                        //var message = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
+                        console.log(message);
                         
+                        //채팅화면에 입력
                         objectMessage(message);
                         
                         if(message.type == 'JOINED') {
@@ -137,38 +142,36 @@
                         modalError.modal('show');
                         
                     } else if(!otherJoined) {
-                        modalErrorBody.text('The other user has not joined the chat yet.');
+                        modalErrorBody.text('다른사용자가 아직 참여하지 않았습니다.');
                         modalError.modal('show');
                     
 					//입력내용 없는경우
-                    } else if(messageArea.get(0).value.trim().length === 0) {
+                    } else if(messageArea.val() === '') {
                     	modalErrorBody.text('메세지를 입력해주세요');
                         modalError.modal('show');
                     
 					//입력내용 있는경우
-                    } else if(messageArea.get(0).value.trim().length > 0) {
+                    } else {
                         var message = {
                               timestamp : new Date()
                         	, type      : 'TEXT'
                         	, user      : username
-                        	, content   : messageArea.get(0).value
+                        	, content   : messageArea.val()
                         };
                         
                         try {
                             var json   = JSON.stringify(message);
+                            
                             var length = json.length;
-                            var buffer = new ArrayBuffer(length);
+                            var buffer = new ArrayBuffer(length*2);
                             var array  = new Uint8Array(buffer);
                             
                             for(var i = 0; i < length; i++) {
                                 array[i] = json.charCodeAt(i);
                             }
                             
-                            console.log(json);
-                            console.log(buffer);
-                            console.log(array);
-                            
                             server.send(buffer);
+                            
                             messageArea.get(0).value = '';
                             
                         } catch(error) {
@@ -180,7 +183,7 @@
 
                 disconnect = function() {
                     if(server != null) {
-                        infoMessage('Disconnected from the chat server.');
+                        infoMessage('연결이 종료되었습니다.');
                         server.close();
                         server = null;
                     }

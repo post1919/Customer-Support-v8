@@ -3,9 +3,9 @@
 }
 
 #chatLog {
-    height: 225px;
-    max-height: 225px;
-    width: 400px;
+    height: 600px;
+    max-height: 600px;
+    width: 800px;
     overflow: auto;
     border: 1px solid #AAA;
     position: relative;
@@ -14,11 +14,13 @@
 }
 
 #chatLog div {
-    font-size: 10px;
+    font-size: 20px;
+    line-height: 30px;
 }
+
 #chatLog div.informational {
-    font-style: italic;
-    color: #AAA;
+    /* font-style: italic; */
+    color: #172fec;
 }
 #chatLog div.error {
     font-weight: bold;

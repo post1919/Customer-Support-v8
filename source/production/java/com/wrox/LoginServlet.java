@@ -1,15 +1,16 @@
 package com.wrox;
 
 
+import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map;
 
 @WebServlet(
         name = "loginServlet",
@@ -20,22 +21,22 @@ public class LoginServlet extends HttpServlet
     private static final Map<String, String> userDatabase = new Hashtable<>();
 
     static {
-        userDatabase.put("albatross", "111111");
-        userDatabase.put("castingn", "111111");
-        userDatabase.put("Mike", "wordpass");
-        userDatabase.put("John", "green");
+        userDatabase.put("a", "1");
+        userDatabase.put("b", "1");
+        userDatabase.put("c", "1");
+        userDatabase.put("d", "1");
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        
+
         if(request.getParameter("logout") != null)
         {
             session.invalidate();
             response.sendRedirect("login");
             return;
-            
+
         } else if(session.getAttribute("username") != null) {
             response.sendRedirect("tickets");
             return;

@@ -53,4 +53,12 @@ public class ChatMessage
     {
         STARTED, JOINED, ERROR, LEFT, TEXT
     }
+
+	@Override
+	public String toString() {
+		return "ChatMessage [timestamp=" + timestamp + ", type=" + type + ", user=" + user + ", content=" + content
+				+ ", getTimestamp()=" + getTimestamp() + ", getType()=" + getType() + ", getUser()=" + getUser()
+				+ ", getContent()=" + getContent() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
+				+ ", toString()=" + super.toString() + "]";
+	}
 }

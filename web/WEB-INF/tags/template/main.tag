@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Customer Support :: <c:out value="${fn:trim(htmlTitle)}" /></title>
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" />
         <link rel="stylesheet"
