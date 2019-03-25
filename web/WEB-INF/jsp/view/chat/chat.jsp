@@ -89,10 +89,12 @@
                     return;
                 }
 
+                // ONOPEN
                 server.onopen = function(event) {
                     infoMessage('채팅서버 연결되었습니다.');
                 };
 
+                // ONCLOSE
                 server.onclose = function(event) {
                     if(server != null) infoMessage('연결이 종료되었습니다.');
                     
@@ -102,18 +104,39 @@
                     if( !event.wasClean || event.code != 1000 ) {
                         modalErrorBody.text('Code ' + event.code + ': ' + event.reason);
                         modalError.modal('show');
+                        
+                        console.log('Code   : ' + event.code);
+                        console.log('Reason : ' + event.reason);
                     }
                 };
 
+                // ONERROR
                 server.onerror = function(event) {
                     modalErrorBody.text(event.data);
                     modalError.modal('show');
                 };
 
+                // ONMESSAGE
                 server.onmessage = function(event) {
                 	
                     if(event.data instanceof ArrayBuffer) {
+                    	
+                        var dataview = new DataView(event.data);
+                        console.log(dataview);
+                    	
+                    	console.log(event.data);
+                        
                         var message = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(event.data)));
+                        
+                    	/*
+                        for(var i=0; i<view.length; i=i+2){
+                          unicode = (view[i] * 255) + view[i] + view[i + 1];
+                          message = message + String.fromCharCode(unicode);
+                        }
+                        */
+                        
+                        console.log('message => ');
+                        console.log(message);
                         
                         //채팅화면에 입력
                         objectMessage(message);
@@ -131,6 +154,7 @@
                     }
                 };
 
+                // SEND
                 send = function() {
                     if(server == null) {
                         modalErrorBody.text('You are not connected!');
@@ -176,6 +200,7 @@
                     }
                 };
 
+                // DISCONNECT
                 disconnect = function() {
                     if(server != null) {
                         infoMessage('연결이 종료되었습니다.');

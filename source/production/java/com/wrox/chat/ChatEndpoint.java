@@ -149,6 +149,7 @@ public class ChatEndpoint implements HttpSessionListener {
     @OnError
     public void onError(Session session, Throwable e) {
     	System.out.println("onError");
+
         ChatMessage message = new ChatMessage();
         message.setUser((String)session.getUserProperties().get("username"));
         message.setType(ChatMessage.Type.ERROR);
@@ -160,6 +161,8 @@ public class ChatEndpoint implements HttpSessionListener {
             if(other != null) {
             	other.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, e.toString()));
             }
+
+            e.printStackTrace();
 
         } catch(IOException ignore) {
 
